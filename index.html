@@ -1,39 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Clinic AI Assistant</title>
+
     <style>
-        body { font-family: "Segoe UI", Tahoma, sans-serif; margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #e8f6f3, #f9fcff); }
-        .main-box { width: 480px; background-color: white; border-radius: 14px; box-shadow: 0 15px 40px rgba(0,0,0,0.12); overflow: hidden; padding-bottom: 20px; }
-        .clinic-header { background-color: #009688; color: white; padding: 16px; display: flex; gap: 12px; align-items: center; }
-        .clinic-header img { width: 58px; height: 58px; border-radius: 50%; border: 2px solid white; }
-        .clinic-header h2 { margin: 0; font-size: 18px; }
-        .clinic-header p { margin: 2px 0; font-size: 13px; }
-        .services { display: flex; justify-content: space-around; background-color: #f1fbf9; padding: 12px 0; }
-        .service { text-align: center; font-size: 12px; color: #00695c; }
-        .service img { width: 34px; margin-bottom: 4px; }
-        .greeting { padding: 12px; text-align: center; font-weight: 600; color: #00796b; }
-        .actions { display: flex; justify-content: space-around; padding: 10px; }
-        .actions button { background-color: #009688; color: white; border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; font-size: 13px; }
-        .actions button:hover { background-color: #00796b; }
-        .chat-area { padding: 15px; }
-        .chat-area input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; }
-        .chat-area button { width: 100%; padding: 10px; background-color: #009688; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
-        .output { margin-top: 12px; background-color: #f1fbf9; padding: 10px; border-radius: 6px; min-height: 40px; font-size: 14px; }
-        .appointment-box { display: none; padding: 15px; background-color: #f9fefe; }
-        .appointment-box input { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; }
-        .appointment-box button { width: 100%; padding: 10px; background-color: #009688; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
-        .admin-box { margin-top: 15px; padding: 10px; background-color: #f1fbf9; border-radius: 6px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-        th, td { border: 1px solid #ccc; padding: 6px; text-align: center; font-size: 13px; }
-        th { background-color: #009688; color: white; }
-        td button { background-color: red; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+        body {
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #e8f6f3, #f9fcff);
+        }
+        .main-box {
+            width: 480px;
+            background-color: white;
+            border-radius: 14px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            overflow: hidden;
+            padding-bottom: 20px;
+        }
+        .clinic-header {
+            background-color: #009688;
+            color: white;
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .clinic-header img {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        .services {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f1fbf9;
+            padding: 12px 0;
+        }
+        .service {
+            text-align: center;
+            font-size: 12px;
+            color: #00695c;
+        }
+        .greeting {
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            color: #00796b;
+        }
+        .actions {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+        }
+        .actions button,
+        .chat-area button,
+        .appointment-box button {
+            background-color: #009688;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .chat-area {
+            padding: 15px;
+        }
+        .chat-area input,
+        .appointment-box input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        .output {
+            margin-top: 12px;
+            background-color: #f1fbf9;
+            padding: 10px;
+            border-radius: 6px;
+            min-height: 40px;
+        }
+        .appointment-box {
+            display: none;
+            padding: 15px;
+        }
+        .admin-box {
+            display: none;
+            padding: 10px;
+            background-color: #f1fbf9;
+            margin: 10px;
+        }
     </style>
 </head>
+
 <body>
 
 <div class="main-box">
-
     <div class="clinic-header">
         <img src="https://img.icons8.com/color/96/medical-doctor.png">
         <div>
@@ -44,10 +112,10 @@
     </div>
 
     <div class="services">
-        <div class="service"><img src="https://img.icons8.com/color/48/stethoscope.png">OPD</div>
-        <div class="service"><img src="https://img.icons8.com/color/48/test-tube.png">Lab</div>
-        <div class="service"><img src="https://img.icons8.com/color/48/syringe.png">Vaccine</div>
-        <div class="service"><img src="https://img.icons8.com/color/48/medical-doctor.png">Consult</div>
+        <div class="service">OPD</div>
+        <div class="service">Lab</div>
+        <div class="service">Vaccine</div>
+        <div class="service">Consult</div>
     </div>
 
     <div class="greeting">👋 Welcome! I’m your Clinic AI Assistant</div>
@@ -59,105 +127,70 @@
     </div>
 
     <div class="appointment-box" id="appointmentBox">
-        <input type="text" id="name" placeholder="Patient Name">
-        <input type="tel" id="phone" placeholder="Mobile Number">
+        <input id="name" placeholder="Patient Name">
+        <input id="phone" placeholder="Mobile Number">
         <input type="date" id="date">
         <input type="time" id="time">
         <button onclick="submitAppointment()">Confirm Appointment</button>
     </div>
 
     <div class="chat-area">
-        <input type="text" id="userInput" placeholder="Type your question here">
+        <input id="userInput" placeholder="Type your question">
         <button onclick="sendMessage()">Ask AI</button>
         <div class="output" id="output"></div>
     </div>
 
-    <div class="admin-box" id="adminBox" style="display:none;">
-        <h3>Appointments</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th><th>Phone</th><th>Date</th><th>Time</th><th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="appointmentsTable"></tbody>
-        </table>
+    <div class="admin-box" id="adminBox">
+        <table id="appointmentsTable"></table>
     </div>
-
 </div>
 
 <script>
 const API_BASE = "https://vision-ai-chatbot-backend-1.onrender.com";
 
-function toggleAppointment() {
+function toggleAppointment(){
     const box = document.getElementById("appointmentBox");
     box.style.display = box.style.display === "block" ? "none" : "block";
 }
 
-async function submitAppointment() {
-    const name = document.getElementById("name").value;
-    const phone = document.getElementById("phone").value;
-    const date = document.getElementById("date").value;
-    const time = document.getElementById("time").value;
-
-    if(!name || !phone || !date || !time){ alert("Fill all fields"); return; }
-
-    await fetch(`${API_BASE}/appointment`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, date, time })
-    });
-
-    document.getElementById("appointmentBox").style.display = "none";
-    document.getElementById("output").innerText = "✅ Appointment booked successfully!";
-}
-
-async function sendMessage() {
-    const input = document.getElementById("userInput").value;
-    if(!input) return;
-
-    document.getElementById("output").innerText = "Thinking...";
-
-    try {
-        const response = await fetch(`${API_BASE}/ask`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ question: input })
+async function submitAppointment(){
+    try{
+        await fetch(`${API_BASE}/appointment`,{
+            method:"POST",
+            headers:{ "Content-Type":"application/json" },
+            body: JSON.stringify({
+                name: name.value,
+                phone: phone.value,
+                date: date.value,
+                time: time.value
+            })
         });
-        const data = await response.json();
-        document.getElementById("output").innerText = data.reply || "AI did not return a response.";
-    } catch {
-        document.getElementById("output").innerText = "AI error, please try later.";
+        output.innerText = "✅ Appointment booked!";
+    }catch{
+        output.innerText = "❌ Server not responding";
     }
 }
 
-function sendQuick(text){ document.getElementById("userInput").value = text; sendMessage(); }
+async function sendMessage(){
+    output.innerText = "Thinking...";
+    try{
+        const res = await fetch(`${API_BASE}/ask`,{
+            method:"POST",
+            headers:{ "Content-Type":"application/json" },
+            body: JSON.stringify({ question: userInput.value })
+        });
 
-async function showAppointments(){
-    const adminBox = document.getElementById("adminBox");
-    adminBox.style.display = "block";
-
-    const res = await fetch(`${API_BASE}/appointments`);
-    const data = await res.json();
-
-    const table = document.getElementById("appointmentsTable");
-    table.innerHTML = "";
-
-    data.forEach((a,i)=>{
-        table.innerHTML += `
-        <tr>
-            <td>${a.name}</td>
-            <td>${a.phone}</td>
-            <td>${a.date}</td>
-            <td>${a.time}</td>
-            <td><button onclick="deleteAppointment(${i})">Delete</button></td>
-        </tr>`;
-    });
+        if(!res.ok) throw new Error();
+        const data = await res.json();
+        output.innerText = data.reply || "No response from AI";
+    }catch{
+        output.innerText = "⚠️ AI server is down";
+    }
 }
 
-async function deleteAppointment(index){
-    await fetch(`${API_BASE}/appointments/${index}`, { method: "DELETE" });
-    showAppointments();
+function sendQuick(text){
+    userInput.value = text;
+    sendMessage();
 }
 </script>
 
