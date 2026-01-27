@@ -1,101 +1,254 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Vision AI Clinic</title>
+    <title>Clinic AI Assistant</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #e8f6f3, #f9fcff);
+        }
+
+        .main-box {
+            width: 420px;
+            background-color: white;
+            border-radius: 14px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+
+        .clinic-header {
+            background-color: #009688;
+            color: white;
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .clinic-header img {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .clinic-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .clinic-header p {
+            margin: 2px 0;
+            font-size: 13px;
+        }
+
+        .services {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f1fbf9;
+            padding: 12px 0;
+        }
+
+        .service {
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .service img {
+            width: 34px;
+        }
+
+        .greeting {
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            color: #00796b;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+        }
+
+        .actions button {
+            background-color: #009688;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .actions button:hover {
+            background-color: #00796b;
+        }
+
+        .chat-area {
+            padding: 15px;
+        }
+
+        .chat-area input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .chat-area button {
+            width: 100%;
+            padding: 10px;
+            background-color: #009688;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .output {
+            margin-top: 12px;
+            background-color: #f1fbf9;
+            padding: 10px;
+            border-radius: 6px;
+            min-height: 40px;
+        }
+
+        .appointment-box {
+            display: none;
+            padding: 15px;
+            background-color: #f9fefe;
+        }
+
+        .appointment-box input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .appointment-box button {
+            width: 100%;
+            padding: 10px;
+            background-color: #009688;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
 </head>
+
 <body>
 
-<h1>Vision AI Clinic Assistant</h1>
+<div class="main-box">
 
-<!-- ================= ASK AI ================= -->
-<h3>Ask AI</h3>
-<input type="text" id="question" placeholder="Ask your question">
-<button onclick="askAI()">Ask</button>
-<p id="aiReply"></p>
+    <div class="clinic-header">
+        <img src="https://img.icons8.com/color/96/medical-doctor.png">
+        <div>
+            <h2>Sharma Clinic</h2>
+            <p>Dr. A. Sharma (MBBS)</p>
+            <p>Mon–Sat | 9 AM – 7 PM</p>
+        </div>
+    </div>
 
-<hr>
+    <div class="services">
+        <div class="service">
+            <img src="https://img.icons8.com/color/48/stethoscope.png">
+            <div>OPD</div>
+        </div>
+        <div class="service">
+            <img src="https://img.icons8.com/color/48/test-tube.png">
+            <div>Lab</div>
+        </div>
+        <div class="service">
+            <img src="https://img.icons8.com/color/48/syringe.png">
+            <div>Vaccine</div>
+        </div>
+        <div class="service">
+            <img src="https://img.icons8.com/color/48/medical-doctor.png">
+            <div>Consult</div>
+        </div>
+    </div>
 
-<!-- ================= BOOK APPOINTMENT ================= -->
-<h3>Book Appointment</h3>
-<input type="text" id="name" placeholder="Patient Name"><br><br>
-<input type="text" id="phone" placeholder="Phone Number"><br><br>
-<input type="date" id="date"><br><br>
-<button onclick="bookAppointment()">Book Appointment</button>
-<p id="bookReply"></p>
+    <div class="greeting">
+        👋 Welcome! I’m your Clinic AI Assistant
+    </div>
 
-<hr>
+    <div class="actions">
+        <button onclick="toggleAppointment()">Book Appointment</button>
+        <button onclick="sendQuick('What are the clinic timings?')">Ask AI</button>
+    </div>
 
-<!-- ================= VIEW APPOINTMENTS ================= -->
-<button onclick="loadAppointments()">View Booked Appointments</button>
+    <div class="appointment-box" id="appointmentBox">
+        <input type="text" id="name" placeholder="Patient Name">
+        <input type="tel" id="phone" placeholder="Mobile Number">
+        <input type="date" id="date">
+        <input type="time" id="time">
+        <button onclick="bookAppointment()">Confirm Appointment</button>
+    </div>
 
-<table border="1" id="appointmentsTable" style="display:none; margin-top:10px;">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Phone</th>
-      <th>Date</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+    <div class="chat-area">
+        <input type="text" id="userInput" placeholder="Type your question here">
+        <button onclick="sendMessage()">Ask AI</button>
+        <div class="output" id="output"></div>
+    </div>
+
+</div>
 
 <script>
 const BACKEND_URL = "https://vision-ai-chatbot-backend-1.onrender.com";
 
-/* ================= ASK AI ================= */
-async function askAI() {
-  document.getElementById("aiReply").innerText = "Thinking...";
-
-  const question = document.getElementById("question").value;
-
-  const res = await fetch(BACKEND_URL + "/ask", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ question })
-  });
-
-  const data = await res.json();
-  document.getElementById("aiReply").innerText = data.reply;
+function toggleAppointment() {
+    const box = document.getElementById("appointmentBox");
+    box.style.display = box.style.display === "block" ? "none" : "block";
 }
 
-/* ================= BOOK APPOINTMENT ================= */
 async function bookAppointment() {
-  const name = document.getElementById("name").value;
-  const phone = document.getElementById("phone").value;
-  const date = document.getElementById("date").value;
+    await fetch(BACKEND_URL + "/appointment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({})
+    });
 
-  const res = await fetch(BACKEND_URL + "/appointment", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, phone, date })
-  });
-
-  const data = await res.json();
-  document.getElementById("bookReply").innerText = data.reply || data.message;
+    document.getElementById("appointmentBox").style.display = "none";
+    document.getElementById("output").innerText =
+        "✅ Appointment booked successfully.";
 }
 
-/* ================= VIEW APPOINTMENTS ================= */
-async function loadAppointments() {
-  const res = await fetch(BACKEND_URL + "/appointments");
-  const data = await res.json();
+async function sendMessage() {
+    const input = document.getElementById("userInput").value;
+    document.getElementById("output").innerText = "Thinking...";
 
-  const table = document.getElementById("appointmentsTable");
-  const tbody = table.querySelector("tbody");
-  tbody.innerHTML = "";
+    try {
+        const response = await fetch(BACKEND_URL + "/ask", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question: input })
+        });
 
-  data.forEach(a => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${a.name}</td>
-      <td>${a.phone}</td>
-      <td>${a.date}</td>
-    `;
-    tbody.appendChild(row);
-  });
+        const data = await response.json();
+        document.getElementById("output").innerText = data.reply;
+    } catch (e) {
+        document.getElementById("output").innerText =
+            "❌ Server busy. Please try again.";
+    }
+}
 
-  table.style.display = "table";
+function sendQuick(text) {
+    document.getElementById("userInput").value = text;
+    sendMessage();
 }
 </script>
 
 </body>
 </html>
+
