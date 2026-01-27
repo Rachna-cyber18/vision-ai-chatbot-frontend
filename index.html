@@ -1,64 +1,101 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Clinic AI Assistant</title>
+  <title>Vision AI Clinic</title>
 </head>
 <body>
 
-<h2>Clinic AI Chat</h2>
-<input id="question" placeholder="Ask something..." />
+<h1>Vision AI Clinic Assistant</h1>
+
+<!-- ================= ASK AI ================= -->
+<h3>Ask AI</h3>
+<input type="text" id="question" placeholder="Ask your question">
 <button onclick="askAI()">Ask</button>
-<p id="answer"></p>
+<p id="aiReply"></p>
 
 <hr>
 
-<h2>Book Appointment</h2>
-<input id="name" placeholder="Your Name" /><br><br>
-<input id="phone" placeholder="Phone Number" /><br><br>
-<input id="date" type="date" /><br><br>
-<button onclick="bookAppointment()">Book</button>
-<p id="bookingResult"></p>
+<!-- ================= BOOK APPOINTMENT ================= -->
+<h3>Book Appointment</h3>
+<input type="text" id="name" placeholder="Patient Name"><br><br>
+<input type="text" id="phone" placeholder="Phone Number"><br><br>
+<input type="date" id="date"><br><br>
+<button onclick="bookAppointment()">Book Appointment</button>
+<p id="bookReply"></p>
+
+<hr>
+
+<!-- ================= VIEW APPOINTMENTS ================= -->
+<button onclick="loadAppointments()">View Booked Appointments</button>
+
+<table border="1" id="appointmentsTable" style="display:none; margin-top:10px;">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Phone</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
 <script>
 const BACKEND_URL = "https://vision-ai-chatbot-backend-1.onrender.com";
 
+/* ================= ASK AI ================= */
 async function askAI() {
-  document.getElementById("answer").innerText = "Thinking...";
+  document.getElementById("aiReply").innerText = "Thinking...";
 
-  try {
-    const res = await fetch(BACKEND_URL + "/ask", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        question: document.getElementById("question").value
-      })
-    });
+  const question = document.getElementById("question").value;
 
-    const data = await res.json();
-    document.getElementById("answer").innerText = data.reply;
-
-  } catch (err) {
-    document.getElementById("answer").innerText = "Server busy";
-  }
-}
-
-async function bookAppointment() {
-  const res = await fetch(BACKEND_URL + "/appointment", {
+  const res = await fetch(BACKEND_URL + "/ask", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: document.getElementById("name").value,
-      phone: document.getElementById("phone").value,
-      date: document.getElementById("date").value
-    })
+    body: JSON.stringify({ question })
   });
 
   const data = await res.json();
-  document.getElementById("bookingResult").innerText = data.message;
+  document.getElementById("aiReply").innerText = data.reply;
+}
+
+/* ================= BOOK APPOINTMENT ================= */
+async function bookAppointment() {
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const date = document.getElementById("date").value;
+
+  const res = await fetch(BACKEND_URL + "/appointment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, phone, date })
+  });
+
+  const data = await res.json();
+  document.getElementById("bookReply").innerText = data.reply || data.message;
+}
+
+/* ================= VIEW APPOINTMENTS ================= */
+async function loadAppointments() {
+  const res = await fetch(BACKEND_URL + "/appointments");
+  const data = await res.json();
+
+  const table = document.getElementById("appointmentsTable");
+  const tbody = table.querySelector("tbody");
+  tbody.innerHTML = "";
+
+  data.forEach(a => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${a.name}</td>
+      <td>${a.phone}</td>
+      <td>${a.date}</td>
+    `;
+    tbody.appendChild(row);
+  });
+
+  table.style.display = "table";
 }
 </script>
 
 </body>
 </html>
-
-
