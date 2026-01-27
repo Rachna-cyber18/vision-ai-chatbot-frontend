@@ -36,25 +36,55 @@
         }
         .clinic-header h2 { margin: 0; font-size: 18px; }
         .clinic-header p { margin: 2px 0; font-size: 13px; }
-        .services { display: flex; justify-content: space-around; background-color: #f1fbf9; padding: 12px 0; }
+        .services {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f1fbf9;
+            padding: 12px 0;
+        }
         .service { text-align: center; font-size: 12px; color: #00695c; }
         .service img { width: 34px; margin-bottom: 4px; }
         .greeting { padding: 12px; text-align: center; font-weight: 600; color: #00796b; }
-        .actions { display: flex; justify-content: space-around; padding: 10px; }
-        .actions button { background-color: #009688; color: white; border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; font-size: 13px; }
-        .actions button:hover { background-color: #00796b; }
+        .actions {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+        }
+        .actions button {
+            background-color: #009688;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-size: 13px;
+        }
         .chat-area { padding: 15px; }
-        .chat-area input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; }
-        .chat-area button { width: 100%; padding: 10px; background-color: #009688; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
-        .output { margin-top: 12px; background-color: #f1fbf9; padding: 10px; border-radius: 6px; min-height: 40px; font-size: 14px; }
-        .appointment-box { display: none; padding: 15px; background-color: #f9fefe; }
-        .appointment-box input { width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; }
-        .appointment-box button { width: 100%; padding: 10px; background-color: #009688; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
-        .admin-box { margin-top: 15px; padding: 10px; background-color: #f1fbf9; border-radius: 6px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-        th, td { border: 1px solid #ccc; padding: 6px; text-align: center; font-size: 13px; }
-        th { background-color: #009688; color: white; }
-        td button { background-color: red; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+        .chat-area input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+        .chat-area button {
+            width: 100%;
+            padding: 10px;
+            background-color: #009688;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .output {
+            margin-top: 12px;
+            background-color: #f1fbf9;
+            padding: 10px;
+            border-radius: 6px;
+            min-height: 40px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -79,122 +109,38 @@
 
     <div class="greeting">👋 Welcome! I’m your Clinic AI Assistant</div>
 
-    <div class="actions">
-        <button onclick="toggleAppointment()">Book Appointment</button>
-        <button onclick="sendQuick('What are the clinic timings?')">Ask AI</button>
-        <button onclick="showAppointments()">View Appointments</button>
-    </div>
-
-    <div class="appointment-box" id="appointmentBox">
-        <input type="text" id="name" placeholder="Patient Name">
-        <input type="tel" id="phone" placeholder="Mobile Number">
-        <input type="date" id="date">
-        <input type="time" id="time">
-        <button onclick="submitAppointment()">Confirm Appointment</button>
-    </div>
-
     <div class="chat-area">
-        <input type="text" id="userInput" placeholder="Type your question here">
+        <input type="text" id="userInput" placeholder="Ask something...">
         <button onclick="sendMessage()">Ask AI</button>
         <div class="output" id="output"></div>
-    </div>
-
-    <div class="admin-box" id="adminBox" style="display:none;">
-        <h3>Appointments</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th><th>Phone</th><th>Date</th><th>Time</th><th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="appointmentsTable"></tbody>
-        </table>
     </div>
 
 </div>
 
 <script>
-const API_BASE = "https://vision-ai-chatbot-backend-1.onrender.com";
-
-function toggleAppointment() {
-    const box = document.getElementById("appointmentBox");
-    box.style.display = box.style.display === "block" ? "none" : "block";
-}
-
-async function submitAppointment() {
-    const name = document.getElementById("name").value;
-    const phone = document.getElementById("phone").value;
-    const date = document.getElementById("date").value;
-    const time = document.getElementById("time").value;
-
-    if(!name || !phone || !date || !time){ 
-        alert("Fill all fields"); 
-        return; 
-    }
-
-    await fetch(`${API_BASE}/appointment`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, date, time })
-    });
-
-    document.getElementById("appointmentBox").style.display = "none";
-    document.getElementById("output").innerText = "✅ Appointment booked successfully!";
-}
+const BACKEND_URL = "https://vision-ai-chatbot-backend-1.onrender.com/chat";
 
 async function sendMessage() {
     const input = document.getElementById("userInput").value;
-    if(!input) return;
+    if (!input) return;
 
-    document.getElementById("output").innerText = "Thinking...";
+    document.getElementById("output").innerText = "🤖 AI is thinking...";
 
     try {
-        const response = await fetch(`${API_BASE}/ask`, {
+        const response = await fetch(BACKEND_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ question: input })
+            body: JSON.stringify({ message: input })
         });
+
         const data = await response.json();
-        document.getElementById("output").innerText = data.answer || "AI did not return an answer.";
-    } catch {
-        document.getElementById("output").innerText = "AI error, please try later.";
+        document.getElementById("output").innerText = data.reply;
+    } catch (err) {
+        document.getElementById("output").innerText =
+          "⚠️ Server busy. Please try again.";
     }
-}
-
-function sendQuick(text){ 
-    document.getElementById("userInput").value = text; 
-    sendMessage(); 
-}
-
-async function showAppointments(){
-    const adminBox = document.getElementById("adminBox");
-    adminBox.style.display = "block";
-
-    const res = await fetch(`${API_BASE}/appointments`);
-    const data = await res.json();
-
-    const table = document.getElementById("appointmentsTable");
-    table.innerHTML = "";
-
-    data.forEach((a,i)=>{
-        table.innerHTML += `
-        <tr>
-            <td>${a.name}</td>
-            <td>${a.phone}</td>
-            <td>${a.date}</td>
-            <td>${a.time}</td>
-            <td><button onclick="deleteAppointment(${i})">Delete</button></td>
-        </tr>`;
-    });
-}
-
-async function deleteAppointment(index){
-    await fetch(`${API_BASE}/appointments/${index}`, { method: "DELETE" });
-    showAppointments();
 }
 </script>
 
 </body>
 </html>
-
-
