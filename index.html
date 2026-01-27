@@ -1,146 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Clinic AI Assistant</title>
-    <style>
-        body {
-            font-family: "Segoe UI", Tahoma, sans-serif;
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #e8f6f3, #f9fcff);
-        }
-        .main-box {
-            width: 480px;
-            background-color: white;
-            border-radius: 14px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-            overflow: hidden;
-            padding-bottom: 20px;
-        }
-        .clinic-header {
-            background-color: #009688;
-            color: white;
-            padding: 16px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        .clinic-header img {
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            border: 2px solid white;
-        }
-        .clinic-header h2 { margin: 0; font-size: 18px; }
-        .clinic-header p { margin: 2px 0; font-size: 13px; }
-        .services {
-            display: flex;
-            justify-content: space-around;
-            background-color: #f1fbf9;
-            padding: 12px 0;
-        }
-        .service { text-align: center; font-size: 12px; color: #00695c; }
-        .service img { width: 34px; margin-bottom: 4px; }
-        .greeting { padding: 12px; text-align: center; font-weight: 600; color: #00796b; }
-        .actions {
-            display: flex;
-            justify-content: space-around;
-            padding: 10px;
-        }
-        .actions button {
-            background-color: #009688;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 8px 14px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .chat-area { padding: 15px; }
-        .chat-area input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
-        .chat-area button {
-            width: 100%;
-            padding: 10px;
-            background-color: #009688;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .output {
-            margin-top: 12px;
-            background-color: #f1fbf9;
-            padding: 10px;
-            border-radius: 6px;
-            min-height: 40px;
-            font-size: 14px;
-        }
-    </style>
+  <title>Clinic AI Assistant</title>
 </head>
 <body>
 
-<div class="main-box">
+<h2>Clinic AI Chat</h2>
+<input id="question" placeholder="Ask something..." />
+<button onclick="askAI()">Ask</button>
+<p id="answer"></p>
 
-    <div class="clinic-header">
-        <img src="https://img.icons8.com/color/96/medical-doctor.png">
-        <div>
-            <h2>Sharma Clinic</h2>
-            <p>Dr. A. Sharma (MBBS)</p>
-            <p>Mon–Sat | 9 AM – 7 PM</p>
-        </div>
-    </div>
+<hr>
 
-    <div class="services">
-        <div class="service"><img src="https://img.icons8.com/color/48/stethoscope.png">OPD</div>
-        <div class="service"><img src="https://img.icons8.com/color/48/test-tube.png">Lab</div>
-        <div class="service"><img src="https://img.icons8.com/color/48/syringe.png">Vaccine</div>
-        <div class="service"><img src="https://img.icons8.com/color/48/medical-doctor.png">Consult</div>
-    </div>
-
-    <div class="greeting">👋 Welcome! I’m your Clinic AI Assistant</div>
-
-    <div class="chat-area">
-        <input type="text" id="userInput" placeholder="Ask something...">
-        <button onclick="sendMessage()">Ask AI</button>
-        <div class="output" id="output"></div>
-    </div>
-
-</div>
+<h2>Book Appointment</h2>
+<input id="name" placeholder="Your Name" /><br><br>
+<input id="phone" placeholder="Phone Number" /><br><br>
+<input id="date" type="date" /><br><br>
+<button onclick="bookAppointment()">Book</button>
+<p id="bookingResult"></p>
 
 <script>
-const BACKEND_URL = "https://vision-ai-chatbot-backend-1.onrender.com/chat";
+const BACKEND_URL = "https://vision-ai-chatbot-backend-1.onrender.com";
 
-async function sendMessage() {
-    const input = document.getElementById("userInput").value;
-    if (!input) return;
+async function askAI() {
+  document.getElementById("answer").innerText = "Thinking...";
 
-    document.getElementById("output").innerText = "🤖 AI is thinking...";
+  try {
+    const res = await fetch(BACKEND_URL + "/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        question: document.getElementById("question").value
+      })
+    });
 
-    try {
-        const response = await fetch(BACKEND_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: input })
-        });
+    const data = await res.json();
+    document.getElementById("answer").innerText = data.reply;
 
-        const data = await response.json();
-        document.getElementById("output").innerText = data.reply;
-    } catch (err) {
-        document.getElementById("output").innerText =
-          "⚠️ Server busy. Please try again.";
-    }
+  } catch (err) {
+    document.getElementById("answer").innerText = "Server busy";
+  }
+}
+
+async function bookAppointment() {
+  const res = await fetch(BACKEND_URL + "/appointment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: document.getElementById("name").value,
+      phone: document.getElementById("phone").value,
+      date: document.getElementById("date").value
+    })
+  });
+
+  const data = await res.json();
+  document.getElementById("bookingResult").innerText = data.message;
 }
 </script>
 
 </body>
 </html>
+
+
