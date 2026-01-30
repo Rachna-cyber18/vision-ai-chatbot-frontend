@@ -148,16 +148,16 @@
 <script>
 const API_BASE = "https://vision-ai-chatbot-backend-1.onrender.com";
 
-function toggleAppointment(){
+function toggleAppointment() {
     const box = document.getElementById("appointmentBox");
     box.style.display = box.style.display === "block" ? "none" : "block";
 }
 
-async function submitAppointment(){
-    try{
-        await fetch(`${API_BASE}/appointment`,{
-            method:"POST",
-            headers:{ "Content-Type":"application/json" },
+async function submitAppointment() {
+    try {
+        await fetch(`${API_BASE}/appointment`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 name: name.value,
                 phone: phone.value,
@@ -166,35 +166,64 @@ async function submitAppointment(){
             })
         });
         output.innerText = "✅ Appointment booked!";
-    }catch{
+    } catch {
         output.innerText = "❌ Server not responding";
     }
 }
 
-async function sendMessage(){
+async function sendMessage() {
     output.innerText = "Thinking...";
-    try{
-        const res = await fetch(`${API_BASE}/ask`,{
-            method:"POST",
-            headers:{ "Content-Type":"application/json" },
+    try {
+        const res = await fetch(`${API_BASE}/ask`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ question: userInput.value })
         });
-
-        if(!res.ok) throw new Error();
         const data = await res.json();
-        output.innerText = data.reply || "No response from AI";
-    }catch{
+        output.innerText = data.reply;
+    } catch {
         output.innerText = "⚠️ AI server is down";
     }
 }
 
-function sendQuick(text){
+function sendQuick(text) {
     userInput.value = text;
     sendMessage();
+}
+
+async function showAppointments() {
+    const adminBox = document.getElementById("adminBox");
+    const table = document.getElementById("appointmentsTable");
+
+    adminBox.style.display = "block";
+    table.innerHTML =
+        "<tr><th>Name</th><th>Phone</th><th>Date</th><th>Time</th></tr>";
+
+    try {
+        const res = await fetch(`${API_BASE}/appointments`);
+        const data = await res.json();
+
+        if (data.length === 0) {
+            table.innerHTML +=
+                "<tr><td colspan='4'>No appointments found</td></tr>";
+            return;
+        }
+
+        data.forEach(a => {
+            table.innerHTML += `
+                <tr>
+                    <td>${a.name}</td>
+                    <td>${a.phone}</td>
+                    <td>${a.date}</td>
+                    <td>${a.time}</td>
+                </tr>`;
+        });
+    } catch {
+        table.innerHTML +=
+            "<tr><td colspan='4'>Server error</td></tr>";
+    }
 }
 </script>
 
 </body>
 </html>
-
-
